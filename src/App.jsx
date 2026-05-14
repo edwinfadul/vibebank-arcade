@@ -18,7 +18,8 @@ function App() {
   const [selectedBank, setSelectedBank] = useState('chase')
   const [selectedBeneficiary, setSelectedBeneficiary] = useState('juan')
   const [exhaustParticles, setExhaustParticles] = useState([])
-  
+  const [crashShake, setCrashShake] = useState(0)
+
   const roadRef = useRef(null)
   const animationRef = useRef(null)
 
@@ -31,17 +32,35 @@ function App() {
     return () => clearInterval(interval)
   }, [speed])
 
+  // Posición del carro: a más velocidad, más a la derecha (más adelante).
+  // Suaviza la transición para que cuando baje la velocidad, baje la posición.
   useEffect(() => {
-    if (speed < 15 && carPosition > 15) {
-      const slowDown = setInterval(() => {
-        setCarPosition(prev => {
-          const newPos = prev - 0.5
-          return newPos < 15 ? 15 : newPos
-        })
-      }, 50)
-      return () => clearInterval(slowDown)
-    }
-  }, [speed, carPosition])
+    if (crashed) return
+    const targetPosition = 5 + Math.min(45, (speed / 200) * 45)
+    const interval = setInterval(() => {
+      setCarPosition(prev => {
+        const diff = targetPosition - prev
+        if (Math.abs(diff) < 0.3) return targetPosition
+        return prev + diff * 0.15
+      })
+    }, 50)
+    return () => clearInterval(interval)
+  }, [speed, crashed])
+
+  // Decaimiento natural de la velocidad (motor en marcha lenta)
+  useEffect(() => {
+    if (isTransferring || crashed) return
+    if (speed <= 0) return
+    const idleMin = turboActive ? 80 : 0
+    const decay = setInterval(() => {
+      setSpeed(prev => {
+        const next = prev - 0.4
+        if (next <= idleMin) return idleMin
+        return next
+      })
+    }, 200)
+    return () => clearInterval(decay)
+  }, [speed, isTransferring, crashed, turboActive])
 
   useEffect(() => {
     if (speed > 50 && !isTransferring) {
@@ -89,22 +108,30 @@ function App() {
         })
         
         setTimeout(() => {
-          setSpeed(30)
+          // El fraude baja la velocidad solo parcialmente, no la pone a cero.
+          // Cuanto más rápido iba, más drástica es la pérdida (pero sigue rodando).
           setTurboActive(false)
           setCrashed(true)
-          setCarPosition(38)
+          setSpeed(prev => {
+            const reduction = prev > 120 ? 0.45 : prev > 60 ? 0.55 : 0.7
+            return Math.max(15, Math.round(prev * reduction))
+          })
+          // Pequeño rebote: el carro retrocede un poco al chocar pero
+          // mantiene su posición relativa según la velocidad resultante.
+          setCarPosition(prev => Math.max(5, prev - 8))
+          setCrashShake(1)
           setMessage(`! FRAUDE ${bankNames[selectedBank]} BLOQUEA!`)
           setIsFraud(true)
-          
+
           setTimeout(() => {
+            setCrashShake(0)
             setCrashed(false)
             setShowHole(false)
-            setCarPosition(5)
-            setMessage('REINICIANDO...')
+            setMessage('RECUPERANDO...')
             setTimeout(() => {
               setMessage('LISTO PARA TRANSFERIR')
             }, 800)
-          }, 2000)
+          }, 1500)
         }, 500)
       } else {
         setIsFraud(false)
@@ -121,14 +148,12 @@ function App() {
         if (consecutiveNonFraud >= 2) {
           setTurboActive(true)
           setSpeed(prev => Math.min(200, prev + 40))
-          setCarPosition(prev => Math.min(35, prev + 5))
           setMessage('¡TURBO ACTIVADO!')
           setShowSuccess(true)
           setTimeout(() => setShowSuccess(false), 1500)
         } else {
           const speedBoost = Math.min(30, amount / 50)
           setSpeed(prev => Math.min(200, prev + speedBoost))
-          setCarPosition(prev => Math.min(35, prev + 3))
           setMessage('* TRANSFERENCIA OK *')
           setShowSuccess(true)
           setTimeout(() => setShowSuccess(false), 1500)
@@ -180,15 +205,45 @@ function App() {
       </header>
 
       <div className="road-container">
+        <div className="road-shoulder top"></div>
+        <div className="road-shoulder bottom"></div>
         <div className="road" style={{ backgroundPositionX: `${roadOffset}%` }}>
-          <div className="road-line center-line"></div>
+          <div className="road-line center-line" style={{ backgroundPositionY: `${roadOffset * 1.5}%` }}></div>
         </div>
-        
+
+        {speed >= 100 && (
+          <div className="speed-lines">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="speed-line" style={{
+                top: `${20 + i * 12}%`,
+                animationDuration: `${0.6 - Math.min(0.4, speed / 600)}s`,
+                animationDelay: `${i * 0.08}s`,
+              }}></div>
+            ))}
+          </div>
+        )}
+
         {showHole && (
           <div className="hole">
-            <div className="hole-label">{holeData.bank}</div>
-            <div className="hole-name">{holeData.beneficiary}</div>
+            <div className="hole-crack crack-1"></div>
+            <div className="hole-crack crack-2"></div>
+            <div className="hole-crack crack-3"></div>
+            <div className="hole-crack crack-4"></div>
+            <div className="hole-inner">
+              <div className="hole-label">{holeData.bank}</div>
+              <div className="hole-name">{holeData.beneficiary}</div>
+            </div>
             <div className="hole-cross">X</div>
+          </div>
+        )}
+
+        {crashShake > 0 && (
+          <div className="crash-impact" style={{ left: `${carPosition + 5}%` }}>
+            <div className="crash-star">*</div>
+            <div className="crash-burst burst-1"></div>
+            <div className="crash-burst burst-2"></div>
+            <div className="crash-burst burst-3"></div>
+            <div className="crash-text">BUMP!</div>
           </div>
         )}
         
@@ -200,7 +255,7 @@ function App() {
         )}
         
         <div className="car-container" style={{ left: `${carPosition}%` }}>
-          <div className={`car ${isTransferring ? 'car-shake' : ''} ${isFraud ? 'car-fraud' : ''} ${turboActive ? 'car-turbo' : ''}`}>
+          <div className={`car ${isTransferring ? 'car-shake' : ''} ${isFraud ? 'car-fraud' : ''} ${turboActive ? 'car-turbo' : ''} ${crashed ? 'car-crashed' : ''}`}>
             <div className="car-body">
               <div className="car-top"></div>
               <div className="car-front"></div>
