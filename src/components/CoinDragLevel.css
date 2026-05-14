@@ -1,15 +1,15 @@
 .coin-level {
-  padding: 16px 14px 20px;
+  padding: 20px 18px 24px;
   position: relative;
 }
 
 .erase-btn-top {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 16px;
-  height: 16px;
-  font-size: 9px;
+  top: 14px;
+  right: 14px;
+  width: 22px;
+  height: 22px;
+  font-size: 12px;
   background: #c62828;
   color: #fff;
   border: 2px solid #fff;
@@ -29,15 +29,15 @@
 .coin-carousel-wrap {
   overflow: hidden;
   border: 4px solid #000;
-  margin: 0 auto 16px;
+  margin: 0 auto 20px;
   max-width: 100%;
   background: linear-gradient(180deg, #2a1a4a 0%, #1a1028 100%);
 }
 
 .coin-carousel {
   display: flex;
-  gap: 14px;
-  padding: 14px 20px;
+  gap: 18px;
+  padding: 18px 24px;
   width: max-content;
   animation: coin-scroll 18s linear infinite;
 }
@@ -53,8 +53,8 @@
 
 .coin-chip {
   flex-shrink: 0;
-  width: 72px;
-  height: 72px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
   background: radial-gradient(circle at 30% 28%, #fff6a8 0%, var(--coin-gold) 45%, #c09010 100%);
   border: 4px solid #000;
@@ -78,61 +78,61 @@
 }
 
 .coin-star {
-  font-size: 10px;
+  font-size: 14px;
   color: #5c4000;
   line-height: 1;
 }
 
 .coin-val {
-  font-size: 11px;
+  font-size: 14px;
   margin-top: 4px;
   color: #2a1800;
 }
 
 .amount-vault {
-  margin: 0 auto 12px;
-  max-width: 420px;
-  min-height: 120px;
+  margin: 0 auto 16px;
+  max-width: 520px;
+  min-height: 150px;
   border: 6px dashed #f8d030;
   background: rgba(0, 0, 0, 0.35);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 12px;
+  padding: 16px;
   position: relative;
 }
 
 .vault-label {
-  font-size: 8px;
+  font-size: 12px;
   opacity: 0.85;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .vault-number {
-  font-size: 22px;
+  font-size: 32px;
   color: #7cfc00;
   text-shadow: 3px 3px 0 #000;
 }
 
 .vault-sub {
-  font-size: 7px;
-  margin-top: 8px;
+  font-size: 10px;
+  margin-top: 10px;
   opacity: 0.7;
 }
 
 .coin-pile {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
   justify-content: center;
-  min-height: 28px;
-  margin-bottom: 14px;
+  min-height: 32px;
+  margin-bottom: 18px;
 }
 
 .pile-chip {
-  font-size: 7px;
-  padding: 4px 6px;
+  font-size: 10px;
+  padding: 5px 8px;
   background: #333;
   border: 2px solid #888;
 }
