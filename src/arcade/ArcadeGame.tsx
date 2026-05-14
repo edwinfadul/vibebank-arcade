@@ -1,12 +1,24 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import './ArcadeGame.css'
+
+interface Transfer {
+  amount: number
+  isFraud: boolean
+  timestamp: number
+}
+
+interface Particle {
+  id: number
+  x: number
+  y: number
+}
 
 function App() {
   const [speed, setSpeed] = useState(0)
   const [isTransferring, setIsTransferring] = useState(false)
   const [turboActive, setTurboActive] = useState(false)
   const [transferAmount, setTransferAmount] = useState('')
-  const [lastTransfers, setLastTransfers] = useState([])
+  const [lastTransfers, setLastTransfers] = useState<Transfer[]>([])
   const [message, setMessage] = useState('LISTO PARA TRANSFERIR')
   const [carPosition, setCarPosition] = useState(20)
   const [roadOffset, setRoadOffset] = useState(0)
@@ -15,13 +27,10 @@ function App() {
   const [showHole, setShowHole] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
   const [holeData, setHoleData] = useState({ bank: '', beneficiary: '' })
-  const [selectedBank, setSelectedBank] = useState('chase')
-  const [selectedBeneficiary, setSelectedBeneficiary] = useState('juan')
-  const [exhaustParticles, setExhaustParticles] = useState([])
+  const [selectedBank, setSelectedBank] = useState<'chase' | 'wells' | 'citi'>('chase')
+  const [selectedBeneficiary, setSelectedBeneficiary] = useState<'juan' | 'maria' | 'carlos'>('juan')
+  const [exhaustParticles, setExhaustParticles] = useState<Particle[]>([])
   const [crashShake, setCrashShake] = useState(0)
-
-  const roadRef = useRef(null)
-  const animationRef = useRef(null)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -137,7 +146,6 @@ function App() {
         setIsFraud(false)
         setCrashed(false)
         setShowHole(false)
-        const nonFraudCount = updatedHistory.filter(t => !t.isFraud).length
         const consecutiveNonFraud = updatedHistory
           .slice()
           .reverse()
@@ -313,7 +321,7 @@ function App() {
               <span className="display-label">BANCO</span>
               <select 
                 value={selectedBank} 
-                onChange={(e) => setSelectedBank(e.target.value)}
+                onChange={(e) => setSelectedBank(e.target.value as 'chase' | 'wells' | 'citi')}
                 className="retro-select"
                 disabled={isTransferring}
               >
@@ -326,7 +334,7 @@ function App() {
               <span className="display-label">DESTINO</span>
               <select 
                 value={selectedBeneficiary} 
-                onChange={(e) => setSelectedBeneficiary(e.target.value)}
+                onChange={(e) => setSelectedBeneficiary(e.target.value as 'juan' | 'maria' | 'carlos')}
                 className="retro-select"
                 disabled={isTransferring}
               >
