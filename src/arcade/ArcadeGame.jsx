@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import './App.css'
+import './ArcadeGame.css'
 
 function App() {
   const [speed, setSpeed] = useState(0)

@@ -1,0 +1,143 @@
+.coin-level {
+  padding: 16px 14px 20px;
+  position: relative;
+}
+
+.erase-btn-top {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 16px;
+  height: 16px;
+  font-size: 9px;
+  background: #c62828;
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  opacity: 0.5;
+  z-index: 10;
+}
+
+.erase-btn-top:hover {
+  opacity: 1;
+  background: #e53935;
+}
+
+.coin-carousel-wrap {
+  overflow: hidden;
+  border: 4px solid #000;
+  margin: 0 auto 16px;
+  max-width: 100%;
+  background: linear-gradient(180deg, #2a1a4a 0%, #1a1028 100%);
+}
+
+.coin-carousel {
+  display: flex;
+  gap: 14px;
+  padding: 14px 20px;
+  width: max-content;
+  animation: coin-scroll 18s linear infinite;
+}
+
+@keyframes coin-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.coin-chip {
+  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 28%, #fff6a8 0%, var(--coin-gold) 45%, #c09010 100%);
+  border: 4px solid #000;
+  box-shadow:
+    inset -4px -4px 0 rgba(0, 0, 0, 0.2),
+    4px 4px 0 #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  user-select: none;
+}
+
+.coin-chip:active {
+  cursor: grabbing;
+}
+
+.coin-chip-dim {
+  opacity: 0.75;
+}
+
+.coin-star {
+  font-size: 10px;
+  color: #5c4000;
+  line-height: 1;
+}
+
+.coin-val {
+  font-size: 11px;
+  margin-top: 4px;
+  color: #2a1800;
+}
+
+.amount-vault {
+  margin: 0 auto 12px;
+  max-width: 420px;
+  min-height: 120px;
+  border: 6px dashed #f8d030;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  position: relative;
+}
+
+.vault-label {
+  font-size: 8px;
+  opacity: 0.85;
+  margin-bottom: 6px;
+}
+
+.vault-number {
+  font-size: 22px;
+  color: #7cfc00;
+  text-shadow: 3px 3px 0 #000;
+}
+
+.vault-sub {
+  font-size: 7px;
+  margin-top: 8px;
+  opacity: 0.7;
+}
+
+.coin-pile {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  min-height: 28px;
+  margin-bottom: 14px;
+}
+
+.pile-chip {
+  font-size: 7px;
+  padding: 4px 6px;
+  background: #333;
+  border: 2px solid #888;
+}
+
+.coin-actions {
+  display: flex;
+  justify-content: center;
+}

@@ -1,0 +1,48 @@
+.app-shell {
+  width: 100%;
+  max-width: 900px;
+}
+
+.app-header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.app-header h1 {
+  font-size: 14px;
+  margin: 0 0 8px;
+  letter-spacing: 1px;
+  text-shadow: 3px 3px 0 #000;
+  color: #ffcc00;
+}
+
+.step-pill {
+  display: inline-block;
+  font-size: 7px;
+  padding: 6px 10px;
+  background: #000;
+  border: 2px solid #fff;
+  color: #8f8;
+}
+
+.start-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: stretch;
+  padding: 20px;
+}
+
+.start-form label {
+  font-size: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.start-actions {
+  margin-top: 8px;
+  display: flex;
+  justify-content: center;
+}

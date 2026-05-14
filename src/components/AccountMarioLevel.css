@@ -1,0 +1,114 @@
+.account-level {
+  padding: 16px 14px 20px;
+}
+
+.account-arena {
+  position: relative;
+  margin: 0 auto 14px;
+  border: 4px solid #000;
+  overflow: hidden;
+  background: #000;
+}
+
+.account-sky {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 72%, #88c070 72%, #88c070 100%);
+}
+
+.question-block {
+  position: absolute;
+  background: linear-gradient(180deg, #f8d878 0%, #d89820 55%, #a86808 100%);
+  border: 3px solid #000;
+  box-shadow: inset -3px -3px 0 rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.qb-mark {
+  font-size: 14px;
+  color: #5c3a00;
+  line-height: 1;
+}
+
+.qb-digit {
+  font-size: 16px;
+  color: #1a0a00;
+  margin-top: 2px;
+}
+
+.mario-sprite {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 28px;
+  height: 36px;
+  z-index: 3;
+  background: linear-gradient(180deg, #e52521 0%, #e52521 42%, #0038d0 42%, #0038d0 100%);
+  border: 3px solid #000;
+  image-rendering: pixelated;
+  box-shadow: inset -2px -2px 0 rgba(0, 0, 0, 0.2);
+}
+
+.mario-sprite::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #fca;
+  border: 2px solid #000;
+  right: 2px;
+  top: 8px;
+}
+
+.account-ground {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  top: 200px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--brick) 0,
+    var(--brick) 16px,
+    var(--brick-dark) 16px,
+    var(--brick-dark) 32px
+  );
+  border-top: 4px solid #000;
+  z-index: 1;
+}
+
+.account-readout {
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.readout-label {
+  display: block;
+  font-size: 7px;
+  opacity: 0.8;
+  margin-bottom: 6px;
+}
+
+.readout-digits {
+  font-size: 14px;
+  letter-spacing: 4px;
+  color: #7cfc00;
+  text-shadow: 2px 2px 0 #000;
+}
+
+.account-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.error-msg {
+  font-size: 7px;
+  color: #888;
+  text-align: center;
+  margin: -8px 0 12px;
+  font-style: italic;
+}

@@ -1,0 +1,139 @@
+.shoot-level {
+  padding: 16px 14px 20px;
+}
+
+.shoot-arena {
+  position: relative;
+  margin: 0 auto 8px;
+  border: 4px solid #000;
+  cursor: crosshair;
+  overflow: hidden;
+}
+
+.bank-select-wide {
+  margin-bottom: 16px;
+}
+
+.bank-options-wide {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.bank-btn-wide {
+  padding: 16px 20px;
+  font-size: 14px;
+  min-height: 60px;
+}
+
+.bank-btn-wide.selected {
+  background: #4caf50;
+  box-shadow: inset 0 -4px 0 rgba(0,0,0,0.3), 0 0 0 3px #2e7d32;
+}
+
+.shoot-sky {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #203060 0%, #5c94fc 55%, #88c070 55%, #88c070 100%);
+}
+
+.shoot-ground {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 48px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--brick) 0,
+    var(--brick) 14px,
+    var(--brick-dark) 14px,
+    var(--brick-dark) 28px
+  );
+  border-top: 4px solid #000;
+  z-index: 1;
+}
+
+.bank-target {
+  position: absolute;
+  width: 140px;
+  padding: 10px 6px 12px;
+  background: #ececec;
+  border: 4px solid #000;
+  z-index: 2;
+  text-align: center;
+}
+
+.bank-roof {
+  display: block;
+  height: 12px;
+  background: #c62828;
+  margin: -10px -6px 8px;
+  border: 3px solid #000;
+}
+
+.bank-name {
+  font-size: 9px;
+  line-height: 1.5;
+  color: #111;
+}
+
+.pipe-target {
+  position: absolute;
+  width: 80px;
+  height: 100px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pipe-body {
+  width: 56px;
+  flex: 1;
+  background: linear-gradient(90deg, var(--pipe-dark) 0%, var(--pipe) 40%, #58f058 100%);
+  border: 4px solid #000;
+}
+
+.pipe-lip {
+  width: 72px;
+  height: 22px;
+  background: linear-gradient(180deg, var(--pipe) 0%, var(--pipe-dark) 100%);
+  border: 4px solid #000;
+  margin-top: -4px;
+}
+
+.pipe-tag {
+  position: absolute;
+  top: -18px;
+  font-size: 6px;
+  color: #ff0;
+  text-shadow: 1px 1px 0 #000;
+}
+
+.shooter {
+  position: absolute;
+  width: 40px;
+  height: 28px;
+  background: linear-gradient(180deg, #e52521 0%, #b01010 100%);
+  border: 3px solid #000;
+  z-index: 4;
+  border-radius: 2px;
+}
+
+.fireball {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 28%, #fff 0%, #ff9800 40%, #e65100 100%);
+  border: 2px solid #000;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.shoot-foot {
+  margin-top: 4px;
+}
