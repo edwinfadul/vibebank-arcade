@@ -26,6 +26,7 @@ function App() {
   const [crashed, setCrashed] = useState(false)
   const [showHole, setShowHole] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
+  const [showFraudAlert, setShowFraudAlert] = useState(false)
   const [holeData, setHoleData] = useState({ bank: '', beneficiary: '' })
   const [selectedBank, setSelectedBank] = useState<'chase' | 'wells' | 'citi'>('chase')
   const [selectedBeneficiary, setSelectedBeneficiary] = useState<'juan' | 'maria' | 'carlos'>('juan')
@@ -44,7 +45,7 @@ function App() {
   // Posición del carro: a más velocidad, más a la derecha (más adelante).
   // Suaviza la transición para que cuando baje la velocidad, baje la posición.
   useEffect(() => {
-    if (crashed) return
+    if (crashed || isTransferring) return
     const targetPosition = 5 + Math.min(45, (speed / 200) * 45)
     const interval = setInterval(() => {
       setCarPosition(prev => {
@@ -54,7 +55,7 @@ function App() {
       })
     }, 50)
     return () => clearInterval(interval)
-  }, [speed, crashed])
+  }, [speed, crashed, isTransferring])
 
   // Decaimiento natural de la velocidad (motor en marcha lenta)
   useEffect(() => {
@@ -63,7 +64,7 @@ function App() {
     const idleMin = turboActive ? 80 : 0
     const decay = setInterval(() => {
       setSpeed(prev => {
-        const next = prev - 0.4
+        const next = Math.round(prev - 0.4)
         if (next <= idleMin) return idleMin
         return next
       })
@@ -121,6 +122,7 @@ function App() {
           // Cuanto más rápido iba, más drástica es la pérdida (pero sigue rodando).
           setTurboActive(false)
           setCrashed(true)
+          setShowFraudAlert(true)
           setSpeed(prev => {
             const reduction = prev > 120 ? 0.45 : prev > 60 ? 0.55 : 0.7
             return Math.max(15, Math.round(prev * reduction))
@@ -129,39 +131,37 @@ function App() {
           // mantiene su posición relativa según la velocidad resultante.
           setCarPosition(prev => Math.max(5, prev - 8))
           setCrashShake(1)
-          setMessage(`! FRAUDE ${bankNames[selectedBank]} BLOQUEA!`)
+          setMessage(`! FRAUDE DETECTADO !`)
           setIsFraud(true)
 
           setTimeout(() => {
             setCrashShake(0)
             setCrashed(false)
             setShowHole(false)
+            setShowFraudAlert(false)
             setMessage('RECUPERANDO...')
             setTimeout(() => {
               setMessage('LISTO PARA TRANSFERIR')
             }, 800)
-          }, 1500)
+          }, 2500)
         }, 500)
       } else {
         setIsFraud(false)
         setCrashed(false)
         setShowHole(false)
-        const consecutiveNonFraud = updatedHistory
-          .slice()
-          .reverse()
-          .findIndex(t => t.isFraud) === -1 
-          ? updatedHistory.length 
-          : updatedHistory.length - updatedHistory.slice().reverse().findIndex(t => t.isFraud) - 1
+        const reversed = updatedHistory.slice().reverse()
+        const firstFraudIndex = reversed.findIndex(t => t.isFraud)
+        const consecutiveNonFraud = firstFraudIndex === -1 ? updatedHistory.length : firstFraudIndex
 
         if (consecutiveNonFraud >= 2) {
           setTurboActive(true)
-          setSpeed(prev => Math.min(200, prev + 40))
+          setSpeed(prev => Math.min(200, Math.round(prev + 40)))
           setMessage('¡TURBO ACTIVADO!')
           setShowSuccess(true)
           setTimeout(() => setShowSuccess(false), 1500)
         } else {
-          const speedBoost = Math.min(30, amount / 50)
-          setSpeed(prev => Math.min(200, prev + speedBoost))
+          const speedBoost = Math.min(30, Math.round(amount / 50))
+          setSpeed(prev => Math.min(200, Math.round(prev + speedBoost)))
           setMessage('* TRANSFERENCIA OK *')
           setShowSuccess(true)
           setTimeout(() => setShowSuccess(false), 1500)
@@ -181,7 +181,7 @@ function App() {
   const handleTurbo = () => {
     if (!turboActive && speed > 0) {
       setTurboActive(true)
-      setSpeed(prev => Math.min(200, prev + 30))
+      setSpeed(prev => Math.min(200, Math.round(prev + 30)))
       setMessage('¡TURBO ACTIVADO!')
     }
   }
@@ -261,6 +261,14 @@ function App() {
             <div className="success-check">OK</div>
           </div>
         )}
+
+        {showFraudAlert && (
+          <div className="fraud-road-alert">
+            <div className="fraud-road-title">🚨 FRAUDE DETECTADO</div>
+            <div className="fraud-road-sub">Transferencia bloqueada por sistema</div>
+            <div className="fraud-road-speed">🔻 Velocidad reducida</div>
+          </div>
+        )}
         
         <div className="car-container" style={{ left: `${carPosition}%` }}>
           <div className={`car ${isTransferring ? 'car-shake' : ''} ${isFraud ? 'car-fraud' : ''} ${turboActive ? 'car-turbo' : ''} ${crashed ? 'car-crashed' : ''}`}>
@@ -299,7 +307,7 @@ function App() {
             <div className="speed-needle" style={{ transform: `rotate(${-90 + (speed / 200) * 180}deg)` }}></div>
           </div>
           <div className="speed-value">
-            <span className="speed-number" style={{ color: getSpeedColor() }}>{speed}</span>
+            <span className="speed-number" style={{ color: getSpeedColor() }}>{Math.round(speed)}</span>
             <span className="speed-unit">KM/H</span>
           </div>
           <div className="speed-label" style={{ color: getSpeedColor() }}>{getSpeedLabel()}</div>
@@ -357,7 +365,7 @@ function App() {
             />
             <span className="currency">USD</span>
           </div>
-          
+
           <button 
             className={`transfer-button ${isTransferring ? 'transferring' : ''}`}
             onClick={handleTransfer}
@@ -387,9 +395,18 @@ function App() {
       </div>
 
       <div className="controls-hint">
-        <span>$ Ingresa monto y presiona TRANSFERIR</span>
-        <span>* 2 transferencias seguidas = TURBO</span>
-        <span>! mayor $1000 = FRAUDE</span>
+        <div className="hint-card">
+          <span className="hint-icon">💵</span>
+          <span className="hint-text">Ingresa un monto y presiona <strong>TRANSFERIR</strong> para acelerar</span>
+        </div>
+        <div className="hint-card turbo-hint">
+          <span className="hint-icon">🔥</span>
+          <span className="hint-text"><strong>2 transferencias OK seguidas</strong> = Modo TURBO activado</span>
+        </div>
+        <div className="hint-card fraud-hint">
+          <span className="hint-icon">🚨</span>
+          <span className="hint-text">Montos <strong>mayores a $1,000</strong> = FRAUDE detectado (velocidad cae)</span>
+        </div>
       </div>
     </div>
   )
